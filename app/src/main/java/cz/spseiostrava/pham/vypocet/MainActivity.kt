@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.edit
 
 class MainActivity : AppParentActivity() {
 
@@ -72,19 +73,19 @@ class MainActivity : AppParentActivity() {
         textViewCategory.text = buildString {
             append(getString(R.string.bmi_category))
             append("\n")
-            append(BMICategory(bmi))
+            append(bmiCategory(bmi))
         }
 
         val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_FILENAME, MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString(SHARED_PREFERENCES_KEY_HEIGHT, editTextHeight.text.toString())
-        editor.putString(SHARED_PREFERENCES_KEY_WEIGHT, editTextWeight.text.toString())
-        editor.putString(SHARED_PREFERENCES_KEY_RESULT, textViewResult.text.toString())
-        editor.putString(SHARED_PREFERENCES_KEY_CATEGORY, textViewCategory.text.toString())
-        editor.apply()
+        sharedPreferences.edit {
+            putString(SHARED_PREFERENCES_KEY_HEIGHT, editTextHeight.text.toString())
+            putString(SHARED_PREFERENCES_KEY_WEIGHT, editTextWeight.text.toString())
+            putString(SHARED_PREFERENCES_KEY_RESULT, textViewResult.text.toString())
+            putString(SHARED_PREFERENCES_KEY_CATEGORY, textViewCategory.text.toString())
+        }
     }
 
-    private fun BMICategory(bmi: Float): String {
+    private fun bmiCategory(bmi: Float): String {
         return when {
             bmi < 18.5 -> getString(R.string.underweight)
             bmi < 25 -> getString(R.string.normal_weight)
