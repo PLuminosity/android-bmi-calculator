@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottomNavItemBmiCalc"
+        android:title="@string/bottomNavTitleBmi"
+        android:icon="@drawable/outline_android_24" />
+
+    <item
+        android:id="@+id/bottomNavItemHistory"
+        android:title="@string/bottomNavTitleHistory"
+        android:icon="@drawable/baseline_history_24" />
+
+    <item
+        android:id="@+id/bottomNavItemAbout"
+        android:title="@string/bottomNavTitleAbout"
+        android:icon="@drawable/outline_apps_24" />
+</menu>

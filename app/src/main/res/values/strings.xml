@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">BMI Calculator</string>
+    <string name="calculate">Calculate</string>
+    <string name="result">Result:</string>
+    <string name="result_bmi_2f">Result:\nBMI: %.2f</string>
+    <string name="enter_your_height_centimeters">Enter your height (centimeters)</string>
+    <string name="enter_your_weight_kilograms">Enter your weight (kilograms)</string>
+    <string name="bmi_category">BMI category:</string>
+    <string name="underweight">Underweight</string>
+    <string name="normal_weight">Normal weight</string>
+    <string name="overweight">Overweight\n</string>
+    <string name="app_description"><![CDATA[Simple BMI calculator - Enter height and weight ->calculated BMI and its category ]]></string>
+    <string name="app_author">Developed by: Andreas Pham</string>
+    <string name="bottomNavTitleBmi">Bmi calculator</string>
+    <string name="bottomNavTitleHistory">History</string>
+    <string name="bottomNavTitleAbout">About</string>
+    <string name="save">Save</string>
+    <string name="optionsMenuTitleLastOperation">Last operation</string>
+    <string name="optionsMenuItemSearchTitle">Search</string>
+    <string name="optionsMenuItemSettingsTitle">Settings</string>
+    <string name="BmiTitle">BMI calculator</string>
+    <string name="HistoryTitle">History</string>
+    <string name="AboutTitle">About</string>
+</resources>
