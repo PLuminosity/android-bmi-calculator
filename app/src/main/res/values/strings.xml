@@ -1,25 +1,77 @@
 <resources>
+    <!-- App -->
     <string name="app_name">BMI Calculator</string>
+    <string name="app_description"><![CDATA[Simple BMI calculator – Enter height and weight → calculated BMI and its category.]]></string>
+    <string name="app_author">Developed by: Andreas Pham</string>
+
+    <!-- BMI calculator screen -->
+    <string name="BmiTitle">BMI Calculator</string>
     <string name="calculate">Calculate</string>
     <string name="result">Result:</string>
-    <string name="result_bmi_2f">Result:\nBMI: %.2f</string>
-    <string name="enter_your_height_centimeters">Enter your height (centimeters)</string>
-    <string name="enter_your_weight_kilograms">Enter your weight (kilograms)</string>
-    <string name="bmi_category">BMI category:</string>
+    <string name="result_bmi_2f">BMI: %.2f</string>
+    <string name="enter_your_height_centimeters">Height (cm)</string>
+    <string name="enter_your_weight_kilograms">Weight (kg)</string>
+    <string name="bmi_category">BMI Category:</string>
     <string name="underweight">Underweight</string>
     <string name="normal_weight">Healthy weight</string>
-    <string name="overweight">Overweight\n</string>
-    <string name="app_description"><![CDATA[Simple BMI calculator - Enter height and weight ->calculated BMI and its category ]]></string>
-    <string name="app_author">Developed by: Andreas Pham</string>
-    <string name="bottomNavTitleBmi">Bmi calculator</string>
+    <string name="overweight">Overweight</string>
+    <string name="bmi_saved">BMI result saved!</string>
+    <string name="et_date_measuring">Date of measurement</string>
+
+    <!-- History screen -->
+    <string name="HistoryTitle">History</string>
+    <string name="no_history">No BMI calculations yet.\nGo calculate your BMI!</string>
+    <string name="history_height_fmt">Height: %.1f cm</string>
+    <string name="history_weight_fmt">Weight: %.1f kg</string>
+    <string name="history_bmi_fmt">BMI: %.2f</string>
+
+    <!-- About / Profile screen -->
+    <string name="AboutTitle">About</string>
+    <string name="section_profile">YOUR PROFILE</string>
+    <string name="section_app">ABOUT THE APP</string>
+    <string name="profile_username">Username: %s</string>
+    <string name="profile_first_name">First name: %s</string>
+    <string name="profile_last_name">Last name: %s</string>
+    <string name="profile_email">Email: %s</string>
+    <string name="profile_member_since">Member since: %s</string>
+    <string name="profile_no_bio">No bio set.</string>
+
+    <!-- Login screen -->
+    <string name="login_subtitle">Track your BMI over time</string>
+    <string name="btn_login">Log In</string>
+    <string name="go_to_register">Don\'t have an account? Register</string>
+
+    <!-- Register screen -->
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Fill in your details to get started</string>
+    <string name="btn_register">Register</string>
+    <string name="go_to_login">Already have an account? Log in</string>
+
+    <!-- Hints -->
+    <string name="hint_email">Email address</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm password</string>
+    <string name="hint_first_name">First name</string>
+    <string name="hint_last_name">Last name</string>
+    <string name="hint_username">Username (display name)</string>
+    <string name="hint_bio">Bio (optional)</string>
+
+    <!-- Validation errors -->
+    <string name="error_fill_all_fields">Please fill in all required fields</string>
+    <string name="error_invalid_email">Please enter a valid email address</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="error_email_taken">An account with this email already exists</string>
+    <string name="error_invalid_credentials">Invalid email or password</string>
+    <string name="error_invalid_height_weight">Please enter valid height and weight</string>
+
+    <!-- Bottom navigation -->
+    <string name="bottomNavTitleBmi">BMI</string>
     <string name="bottomNavTitleHistory">History</string>
     <string name="bottomNavTitleAbout">About</string>
+
+    <!-- Toolbar menu -->
+    <string name="optionsMenuTitleLastOperation">Last inputs</string>
+    <string name="optionsMenuItemSettingsTitle">Log Out</string>
     <string name="save">Save</string>
-    <string name="optionsMenuTitleLastOperation">Last operation</string>
-    <string name="optionsMenuItemSearchTitle">Search</string>
-    <string name="optionsMenuItemSettingsTitle">Settings</string>
-    <string name="BmiTitle">BMI calculator</string>
-    <string name="HistoryTitle">History</string>
-    <string name="AboutTitle">About</string>
-    <string name="et_date_messuring">Enter date of messuring</string>
 </resources>

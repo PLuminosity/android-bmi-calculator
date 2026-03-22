@@ -15,6 +15,10 @@ open class AppParentActivity : AppCompatActivity() {
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var toolbar: Toolbar
 
+    /** Convenience: current logged-in user's ID from the session. */
+    protected val currentUserId: Long
+        get() = SessionManager.userId(this)
+
     protected fun setToolbar(title: String, showUp: Boolean) {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -22,16 +26,10 @@ open class AppParentActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(showUp)
     }
 
-    /**
-     * Skryje softwarovou klávesnici.
-     * Zdroj: https://rmirabelle.medium.com/close-hide-the-soft-keyboard-in-android-db1da22b09d2
-     */
+    /** Hides the soft keyboard. */
     fun hideKeyboard(activity: Activity) {
         val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        var view = activity.currentFocus
-        if (view == null) {
-            view = View(activity)
-        }
+        val view = activity.currentFocus ?: View(activity)
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
@@ -42,15 +40,18 @@ open class AppParentActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.bottomNavItemBmiCalc -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    if (selectedItemId != R.id.bottomNavItemBmiCalc)
+                        startActivity(Intent(this, MainActivity::class.java))
                     true
                 }
                 R.id.bottomNavItemAbout -> {
-                    startActivity(Intent(this, AboutActivity::class.java))
+                    if (selectedItemId != R.id.bottomNavItemAbout)
+                        startActivity(Intent(this, AboutActivity::class.java))
                     true
                 }
                 R.id.bottomNavItemHistory -> {
-                    startActivity(Intent(this, HistoryActivity::class.java))
+                    if (selectedItemId != R.id.bottomNavItemHistory)
+                        startActivity(Intent(this, HistoryActivity::class.java))
                     true
                 }
                 else -> false
@@ -58,8 +59,20 @@ open class AppParentActivity : AppCompatActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    /** Log out the current user and navigate back to LoginActivity. */
+    protected fun logout() {
+        SessionManager.clear(this)
+        startActivity(Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressedDispatcher.onBackPressed()
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
 

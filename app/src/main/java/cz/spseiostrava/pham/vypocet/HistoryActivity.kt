@@ -3,23 +3,18 @@ package cz.spseiostrava.pham.vypocet
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import cz.spseiostrava.pham.vypocet.database.AppDatabase
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HistoryActivity : AppParentActivity() {
 
-    private companion object {
-        const val SHARED_PREFERENCES_FILENAME = "general"
-        const val SHARED_PREFERENCES_KEY_HEIGHT = "lastHeight"
-        const val SHARED_PREFERENCES_KEY_WEIGHT = "lastWeight"
-        const val SHARED_PREFERENCES_KEY_RESULT = "lastResult"
-        const val SHARED_PREFERENCES_KEY_CATEGORY = "lastCategory"
-    }
-
-    private lateinit var tvHistoryHeight: TextView
-    private lateinit var tvHistoryWeight: TextView
-    private lateinit var tvHistoryResult: TextView
-    private lateinit var tvHistoryCategory: TextView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var tvNoHistory: TextView
-    private lateinit var historyLayout: View
+    private lateinit var adapter: BmiHistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,36 +23,39 @@ class HistoryActivity : AppParentActivity() {
         setBottomMenu(R.id.bottomNavItemHistory)
         setToolbar(getString(R.string.HistoryTitle), true)
 
-        tvHistoryHeight = findViewById(R.id.tvHistoryHeight)
-        tvHistoryWeight = findViewById(R.id.tvHistoryWeight)
-        tvHistoryResult = findViewById(R.id.tvHistoryResult)
-        tvHistoryCategory = findViewById(R.id.tvHistoryCategory)
-        tvNoHistory = findViewById(R.id.tvNoHistory)
-        historyLayout = findViewById(R.id.historyLayout)
+        recyclerView = findViewById(R.id.recyclerViewHistory)
+        tvNoHistory  = findViewById(R.id.tvNoHistory)
 
-        loadHistory()
+        adapter = BmiHistoryAdapter { item ->
+            // Delete on swipe/button tap
+            lifecycleScope.launch {
+                AppDatabase.getInstance(this@HistoryActivity)
+                    .bmiDao()
+                    .deleteBmiInfo(item)
+            }
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        observeHistory()
     }
 
-    private fun loadHistory() {
-        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES_FILENAME, MODE_PRIVATE)
-
-        val height = sharedPreferences.getString(SHARED_PREFERENCES_KEY_HEIGHT, null)
-        val weight = sharedPreferences.getString(SHARED_PREFERENCES_KEY_WEIGHT, null)
-        val result = sharedPreferences.getString(SHARED_PREFERENCES_KEY_RESULT, null)
-        val category = sharedPreferences.getString(SHARED_PREFERENCES_KEY_CATEGORY, null)
-
-        // Zkontrolujeme, zda jsou data k dispozici
-        if (height != null && weight != null && result != null && category != null) {
-            historyLayout.visibility = View.VISIBLE
-            tvNoHistory.visibility = View.GONE
-
-            tvHistoryHeight.text = "Height: $height cm"
-            tvHistoryWeight.text = "Weight: $weight kg"
-            tvHistoryResult.text = result
-            tvHistoryCategory.text = category
-        } else {
-            historyLayout.visibility = View.GONE
-            tvNoHistory.visibility = View.VISIBLE
+    private fun observeHistory() {
+        val db = AppDatabase.getInstance(this)
+        lifecycleScope.launch {
+            db.bmiDao()
+                .getBmiInfoForProfile(currentUserId.toInt())
+                .collectLatest { items ->
+                    adapter.submitList(items)
+                    if (items.isEmpty()) {
+                        recyclerView.visibility = View.GONE
+                        tvNoHistory.visibility  = View.VISIBLE
+                    } else {
+                        recyclerView.visibility = View.VISIBLE
+                        tvNoHistory.visibility  = View.GONE
+                    }
+                }
         }
     }
 }

@@ -12,24 +12,43 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vypocet"
         tools:targetApi="31">
+
+        <!-- ── Entry point: Login screen ─────────────────────── -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- ── Registration ──────────────────────────────────── -->
+        <activity
+            android:name=".RegisterActivity"
+            android:parentActivityName=".LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- ── Main BMI calculator ───────────────────────────── -->
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
+            android:exported="false" />
+
+        <!-- ── History ───────────────────────────────────────── -->
         <activity
             android:name=".HistoryActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
+
+        <!-- ── About / Profile ───────────────────────────────── -->
         <activity
             android:name=".AboutActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="orientation|screenSize|screenLayout"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
