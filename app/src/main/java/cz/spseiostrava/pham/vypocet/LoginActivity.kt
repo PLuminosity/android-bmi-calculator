@@ -63,14 +63,12 @@ class LoginActivity : AppCompatActivity() {
                 return@launch
             }
 
-            // Success – persist session and open the app
             SessionManager.saveSession(this@LoginActivity, user.userID.toLong())
             goToMain()
         }
     }
 
     private fun showError(msg: String) {
-        // Run on main thread (we might be inside a coroutine)
         runOnUiThread {
             etPassword.error = null
             etEmail.error = msg

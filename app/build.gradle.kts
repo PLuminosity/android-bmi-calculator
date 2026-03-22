@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -44,6 +45,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.8.4")
     implementation(libs.jbcrypt)
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+    ksp("androidx.room:room-compiler:2.8.4")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
