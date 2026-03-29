@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Required for ZenQuotes API calls -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,7 +16,7 @@
         android:theme="@style/Theme.Vypocet"
         tools:targetApi="31">
 
-        <!-- ── Entry point: Login screen ─────────────────────── -->
+        <!-- Entry point: Login screen -->
         <activity
             android:name=".LoginActivity"
             android:exported="true"
@@ -24,26 +27,26 @@
             </intent-filter>
         </activity>
 
-        <!-- ── Registration ──────────────────────────────────── -->
+        <!-- Registration -->
         <activity
             android:name=".RegisterActivity"
             android:parentActivityName=".LoginActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- ── Main BMI calculator ───────────────────────────── -->
+        <!-- Main BMI calculator -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|screenLayout"
             android:exported="false" />
 
-        <!-- ── History ───────────────────────────────────────── -->
+        <!-- History -->
         <activity
             android:name=".HistoryActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
 
-        <!-- ── About / Profile ───────────────────────────────── -->
+        <!-- About / Profile -->
         <activity
             android:name=".AboutActivity"
             android:parentActivityName=".MainActivity"

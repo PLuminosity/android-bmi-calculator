@@ -2,39 +2,39 @@ package cz.spseiostrava.pham.vypocet
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.TextInputEditText
 import cz.spseiostrava.pham.vypocet.database.AppDatabase
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var etEmail: EditText
-    private lateinit var etPassword: EditText
-    private lateinit var btnLogin: Button
+    private lateinit var etEmail: TextInputEditText
+    private lateinit var etPassword: TextInputEditText
     private lateinit var tvGoRegister: TextView
+
+    private companion object {
+        const val KEY_EMAIL = "email"  // Password intentionally never saved for security
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // If already logged in skip to MainActivity
-        if (SessionManager.isLoggedIn(this)) {
-            goToMain()
-            return
-        }
+        if (SessionManager.isLoggedIn(this)) { goToMain(); return }
 
         setContentView(R.layout.activity_login)
 
         etEmail      = findViewById(R.id.etLoginEmail)
         etPassword   = findViewById(R.id.etLoginPassword)
-        btnLogin     = findViewById(R.id.btnLogin)
         tvGoRegister = findViewById(R.id.tvGoToRegister)
 
-        btnLogin.setOnClickListener { attemptLogin() }
+        // Restore email only (password cleared for security)
+        savedInstanceState?.getString(KEY_EMAIL)?.let { etEmail.setText(it) }
+
+        findViewById<android.widget.Button>(R.id.btnLogin).setOnClickListener { attemptLogin() }
         tvGoRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
@@ -45,33 +45,18 @@ class LoginActivity : AppCompatActivity() {
         val password = etPassword.text.toString()
 
         if (email.isBlank() || password.isBlank()) {
-            showError(getString(R.string.error_fill_all_fields))
-            return
+            etEmail.error = getString(R.string.error_fill_all_fields); return
         }
 
         val db = AppDatabase.getInstance(this)
         lifecycleScope.launch {
             val user = db.userDao().getUserByEmail(email)
-            if (user == null) {
-                showError(getString(R.string.error_invalid_credentials))
+            if (user == null || !BCrypt.checkpw(password, user.passwordHash)) {
+                runOnUiThread { etEmail.error = getString(R.string.error_invalid_credentials) }
                 return@launch
             }
-
-            val passwordMatch = BCrypt.checkpw(password, user.passwordHash)
-            if (!passwordMatch) {
-                showError(getString(R.string.error_invalid_credentials))
-                return@launch
-            }
-
             SessionManager.saveSession(this@LoginActivity, user.userID.toLong())
             goToMain()
-        }
-    }
-
-    private fun showError(msg: String) {
-        runOnUiThread {
-            etPassword.error = null
-            etEmail.error = msg
         }
     }
 
@@ -80,5 +65,13 @@ class LoginActivity : AppCompatActivity() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
         finish()
+    }
+
+    // ── Instance state ────────────────────────────────────────────────────────
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_EMAIL, etEmail.text.toString())
+        // Password is NOT saved intentionally
     }
 }

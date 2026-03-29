@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Brand palette -->
+    <color name="colorPrimary">#00796B</color>       <!-- Teal 700 -->
+    <color name="colorPrimaryDark">#004D40</color>   <!-- Teal 900 -->
+    <color name="colorPrimaryLight">#B2DFDB</color>  <!-- Teal 100 -->
+    <color name="colorSecondary">#FF8F00</color>     <!-- Amber 800 – accent -->
+    <color name="colorSecondaryLight">#FFE082</color>
+
+    <!-- Backgrounds -->
+    <color name="colorBackground">#F0F4F3</color>    <!-- Very light green-grey -->
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceVariant">#E8F5E9</color>
+
+    <!-- Text -->
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnSurface">#1C2B29</color>
+    <color name="colorOnSurfaceVariant">#4A6360</color>
+    <color name="colorHint">#90A4AE</color>
+
+    <!-- BMI category indicators -->
+    <color name="bmiUnderweight">#1565C0</color>     <!-- Blue 800 -->
+    <color name="bmiNormal">#2E7D32</color>          <!-- Green 800 -->
+    <color name="bmiOverweight">#E65100</color>      <!-- Deep Orange 900 -->
+
+    <!-- Legacy -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

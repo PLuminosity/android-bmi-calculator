@@ -3,14 +3,16 @@ package cz.spseiostrava.pham.vypocet
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
-import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textfield.TextInputEditText
 import cz.spseiostrava.pham.vypocet.database.AppDatabase
 import cz.spseiostrava.pham.vypocet.database.BmiInfoEntity
 import kotlinx.coroutines.launch
@@ -19,15 +21,23 @@ import java.util.Calendar
 class MainActivity : AppParentActivity() {
 
     private lateinit var datePicker: DatePicker
-    private lateinit var editTextHeight: EditText
-    private lateinit var editTextWeight: EditText
+    private lateinit var editTextHeight: TextInputEditText
+    private lateinit var editTextWeight: TextInputEditText
     private lateinit var buttonCalculate: Button
     private lateinit var textViewResult: TextView
     private lateinit var textViewCategory: TextView
+    private lateinit var cardResult: MaterialCardView
 
     private companion object {
-        const val STATE_KEY_RESULT   = "result"
-        const val STATE_KEY_CATEGORY = "category"
+        // Keys for onSaveInstanceState
+        const val KEY_RESULT      = "result"
+        const val KEY_CATEGORY    = "category"
+        const val KEY_HEIGHT      = "height"
+        const val KEY_WEIGHT      = "weight"
+        const val KEY_DATE_YEAR   = "date_year"
+        const val KEY_DATE_MONTH  = "date_month"
+        const val KEY_DATE_DAY    = "date_day"
+        const val KEY_CARD_VISIBLE = "card_visible"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,10 +56,22 @@ class MainActivity : AppParentActivity() {
         buttonCalculate  = findViewById(R.id.buttonCalculate)
         textViewResult   = findViewById(R.id.textViewResult)
         textViewCategory = findViewById(R.id.textViewCategory)
+        cardResult       = findViewById(R.id.cardResult)
 
-        if (savedInstanceState != null) {
-            textViewResult.text   = savedInstanceState.getString(STATE_KEY_RESULT)
-            textViewCategory.text = savedInstanceState.getString(STATE_KEY_CATEGORY)
+        // Restore saved instance state
+        savedInstanceState?.let { state ->
+            editTextHeight.setText(state.getString(KEY_HEIGHT))
+            editTextWeight.setText(state.getString(KEY_WEIGHT))
+            textViewResult.text   = state.getString(KEY_RESULT)
+            textViewCategory.text = state.getString(KEY_CATEGORY)
+            if (state.getBoolean(KEY_CARD_VISIBLE, false)) {
+                cardResult.visibility = View.VISIBLE
+            }
+            // Restore DatePicker – only if values were saved
+            val year  = state.getInt(KEY_DATE_YEAR,  -1)
+            val month = state.getInt(KEY_DATE_MONTH, -1)
+            val day   = state.getInt(KEY_DATE_DAY,   -1)
+            if (year != -1) datePicker.updateDate(year, month, day)
         }
 
         buttonCalculate.setOnClickListener {
@@ -62,7 +84,7 @@ class MainActivity : AppParentActivity() {
     }
 
     private fun calculateAndSaveBMI() {
-        var heightCm = editTextHeight.text.toString().toFloatOrNull()
+        val heightCm = editTextHeight.text.toString().toFloatOrNull()
         val weightKg = editTextWeight.text.toString().toFloatOrNull()
 
         if (heightCm == null || weightKg == null || heightCm <= 54 || weightKg <= 0) {
@@ -73,22 +95,26 @@ class MainActivity : AppParentActivity() {
         val heightM = heightCm / 100f
         val bmi     = weightKg / (heightM * heightM)
 
-        textViewResult.text = getString(R.string.result_bmi_2f).format(bmi)
-        textViewCategory.text = buildString {
-            append(getString(R.string.bmi_category))
-            append("\n")
-            append(bmiCategory(bmi))
-        }
+        textViewResult.text   = "%.2f".format(bmi)
+        textViewCategory.text = bmiCategory(bmi)
+        cardResult.visibility = View.VISIBLE
 
-        // Convert DatePicker selection to epoch millis
+        // Color the result by category
+        val categoryColor = when {
+            bmi < 18.5f -> getColor(R.color.bmiUnderweight)
+            bmi < 25f   -> getColor(R.color.bmiNormal)
+            else        -> getColor(R.color.bmiOverweight)
+        }
+        textViewResult.setTextColor(categoryColor)
+        textViewCategory.setTextColor(categoryColor)
+
         val cal = Calendar.getInstance().apply {
             set(datePicker.year, datePicker.month, datePicker.dayOfMonth, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
         }
 
-        val db = AppDatabase.getInstance(this)
         lifecycleScope.launch {
-            db.bmiDao().insertBmiInfo(
+            AppDatabase.getInstance(this@MainActivity).bmiDao().insertBmiInfo(
                 BmiInfoEntity(
                     profileID   = currentUserId.toInt(),
                     measureDate = cal.timeInMillis,
@@ -107,6 +133,22 @@ class MainActivity : AppParentActivity() {
         else        -> getString(R.string.overweight)
     }
 
+    // ── Instance state ────────────────────────────────────────────────────────
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_RESULT,       textViewResult.text.toString())
+        outState.putString(KEY_CATEGORY,     textViewCategory.text.toString())
+        outState.putString(KEY_HEIGHT,       editTextHeight.text.toString())
+        outState.putString(KEY_WEIGHT,       editTextWeight.text.toString())
+        outState.putInt(KEY_DATE_YEAR,       datePicker.year)
+        outState.putInt(KEY_DATE_MONTH,      datePicker.month)
+        outState.putInt(KEY_DATE_DAY,        datePicker.dayOfMonth)
+        outState.putBoolean(KEY_CARD_VISIBLE, cardResult.visibility == View.VISIBLE)
+    }
+
+    // ── Toolbar menu ──────────────────────────────────────────────────────────
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return super.onCreateOptionsMenu(menu)
@@ -114,23 +156,8 @@ class MainActivity : AppParentActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.optionsMenuItemSettings -> {
-                logout()
-                true
-            }
+            R.id.optionsMenuItemSettings -> { logout(); true }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(STATE_KEY_RESULT,   textViewResult.text.toString())
-        outState.putString(STATE_KEY_CATEGORY, textViewCategory.text.toString())
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        textViewResult.text   = savedInstanceState.getString(STATE_KEY_RESULT)
-        textViewCategory.text = savedInstanceState.getString(STATE_KEY_CATEGORY)
     }
 }

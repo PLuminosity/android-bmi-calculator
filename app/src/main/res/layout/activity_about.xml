@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".AboutActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -28,15 +29,103 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="16dp">
 
-            <!-- ── Profile card ─────────────────────────────────── -->
+            <!-- ── Daily Motivation card ─────────────────────────── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="20dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/colorPrimary">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Header row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/section_quote"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="#B2DFDB"
+                            android:letterSpacing="0.12" />
+
+                        <ImageButton
+                            android:id="@+id/btnRefreshQuote"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/outline_refresh_24"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:tint="@color/white"
+                            android:contentDescription="@string/btn_refresh_quote" />
+
+                        <ImageButton
+                            android:id="@+id/btnShareQuote"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/outline_share_24"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:tint="@color/white"
+                            android:contentDescription="@string/btn_share_quote"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/quoteProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:indeterminateTint="@color/white"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tvQuoteText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="17sp"
+                        android:lineSpacingMultiplier="1.45"
+                        android:fontFamily="serif"
+                        android:textStyle="italic"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="12dp"
+                        tools:text="&quot;Take care of your body. It&#8217;s the only place you have to live.&quot;" />
+
+                    <TextView
+                        android:id="@+id/tvQuoteAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="#B2DFDB"
+                        tools:text="— Jim Rohn" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── Profile card ──────────────────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -48,10 +137,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section_profile"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.1"
-                        android:layout_marginBottom="12dp" />
+                        style="@style/SectionLabel" />
 
                     <TextView
                         android:id="@+id/tvProfileUsername"
@@ -59,6 +145,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="22sp"
                         android:textStyle="bold"
+                        android:textColor="@color/colorOnSurface"
                         android:layout_marginBottom="4dp"
                         tools:text="Username: john_doe" />
 
@@ -67,44 +154,87 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
+                        android:textColor="@color/colorOnSurfaceVariant"
                         android:layout_marginBottom="16dp"
                         tools:text="No bio yet." />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?android:attr/listDivider"
+                        android:background="@color/colorPrimaryLight"
                         android:layout_marginBottom="12dp" />
 
-                    <TextView
-                        android:id="@+id/tvProfileFirstName"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:layout_marginBottom="6dp"
-                        tools:text="First name: John" />
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="FIRST NAME"
+                                android:textSize="10sp"
+                                android:textColor="@color/colorHint"
+                                android:letterSpacing="0.08" />
+                            <TextView
+                                android:id="@+id/tvProfileFirstName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:textColor="@color/colorOnSurface"
+                                tools:text="John" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LAST NAME"
+                                android:textSize="10sp"
+                                android:textColor="@color/colorHint"
+                                android:letterSpacing="0.08" />
+                            <TextView
+                                android:id="@+id/tvProfileLastName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:textColor="@color/colorOnSurface"
+                                tools:text="Doe" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/tvProfileLastName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:layout_marginBottom="6dp"
-                        tools:text="Last name: Doe" />
-
+                        android:text="EMAIL"
+                        android:textSize="10sp"
+                        android:textColor="@color/colorHint"
+                        android:letterSpacing="0.08" />
                     <TextView
                         android:id="@+id/tvProfileEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        android:layout_marginBottom="6dp"
-                        tools:text="Email: john@example.com" />
+                        android:textColor="@color/colorOnSurface"
+                        android:layout_marginBottom="8dp"
+                        tools:text="john@example.com" />
 
                     <TextView
                         android:id="@+id/tvProfileMemberSince"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
+                        android:textColor="@color/colorHint"
                         tools:text="Member since: 01. 01. 2024" />
 
                 </LinearLayout>
@@ -114,8 +244,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -127,10 +257,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section_app"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.1"
-                        android:layout_marginBottom="12dp" />
+                        style="@style/SectionLabel" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -138,6 +265,7 @@
                         android:text="@string/app_name"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:textColor="@color/colorOnSurface"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
@@ -145,13 +273,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/app_description"
                         android:textSize="14sp"
+                        android:textColor="@color/colorOnSurfaceVariant"
                         android:layout_marginBottom="12dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/app_author"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

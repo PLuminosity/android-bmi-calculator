@@ -6,9 +6,9 @@
 
     <!-- BMI calculator screen -->
     <string name="BmiTitle">BMI Calculator</string>
-    <string name="calculate">Calculate</string>
+    <string name="calculate">Calculate BMI</string>
     <string name="result">Result:</string>
-    <string name="result_bmi_2f">BMI: %.2f</string>
+    <string name="result_bmi_2f">%.2f</string>
     <string name="enter_your_height_centimeters">Height (cm)</string>
     <string name="enter_your_weight_kilograms">Weight (kg)</string>
     <string name="bmi_category">BMI Category:</string>
@@ -17,6 +17,9 @@
     <string name="overweight">Overweight</string>
     <string name="bmi_saved">BMI result saved!</string>
     <string name="et_date_measuring">Date of measurement</string>
+    <string name="section_date">MEASUREMENT DATE</string>
+    <string name="section_measurements">YOUR MEASUREMENTS</string>
+    <string name="section_result">YOUR BMI</string>
 
     <!-- History screen -->
     <string name="HistoryTitle">History</string>
@@ -35,6 +38,15 @@
     <string name="profile_email">Email: %s</string>
     <string name="profile_member_since">Member since: %s</string>
     <string name="profile_no_bio">No bio set.</string>
+
+    <!-- Quote card -->
+    <string name="section_quote">DAILY MOTIVATION</string>
+    <string name="btn_refresh_quote">Refresh quote</string>
+    <string name="btn_share_quote">Share quote</string>
+    <string name="quote_fallback">\"Take care of your body. It\'s the only place you have to live.\"</string>
+    <string name="share_quote_footer">Shared from BMI Calculator</string>
+    <string name="share_quote_subject">Motivational quote</string>
+    <string name="share_quote_chooser">Share quote via…</string>
 
     <!-- Login screen -->
     <string name="login_subtitle">Track your BMI over time</string>

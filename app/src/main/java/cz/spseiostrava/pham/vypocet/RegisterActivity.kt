@@ -2,25 +2,31 @@ package cz.spseiostrava.pham.vypocet
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.TextInputEditText
 import cz.spseiostrava.pham.vypocet.database.AppDatabase
 import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var etFirstName: EditText
-    private lateinit var etLastName: EditText
-    private lateinit var etEmail: EditText
-    private lateinit var etPassword: EditText
-    private lateinit var etConfirmPassword: EditText
-    private lateinit var etUsername: EditText
-    private lateinit var etBio: EditText
-    private lateinit var btnRegister: Button
-    private lateinit var tvGoLogin: TextView
+    private lateinit var etFirstName: TextInputEditText
+    private lateinit var etLastName: TextInputEditText
+    private lateinit var etEmail: TextInputEditText
+    private lateinit var etPassword: TextInputEditText
+    private lateinit var etConfirmPassword: TextInputEditText
+    private lateinit var etUsername: TextInputEditText
+    private lateinit var etBio: TextInputEditText
+
+    private companion object {
+        // Passwords are intentionally excluded from saved state
+        const val KEY_FIRST_NAME = "first_name"
+        const val KEY_LAST_NAME  = "last_name"
+        const val KEY_EMAIL      = "email"
+        const val KEY_USERNAME   = "username"
+        const val KEY_BIO        = "bio"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +39,19 @@ class RegisterActivity : AppCompatActivity() {
         etConfirmPassword = findViewById(R.id.etRegConfirmPassword)
         etUsername        = findViewById(R.id.etRegUsername)
         etBio             = findViewById(R.id.etRegBio)
-        btnRegister       = findViewById(R.id.btnRegister)
-        tvGoLogin         = findViewById(R.id.tvGoToLogin)
 
-        btnRegister.setOnClickListener { attemptRegister() }
-        tvGoLogin.setOnClickListener { finish() }   // Back to LoginActivity
+        // Restore non-sensitive fields after rotation
+        savedInstanceState?.let {
+            etFirstName.setText(it.getString(KEY_FIRST_NAME))
+            etLastName.setText(it.getString(KEY_LAST_NAME))
+            etEmail.setText(it.getString(KEY_EMAIL))
+            etUsername.setText(it.getString(KEY_USERNAME))
+            etBio.setText(it.getString(KEY_BIO))
+            // Passwords intentionally not restored
+        }
+
+        findViewById<android.widget.Button>(R.id.btnRegister).setOnClickListener { attemptRegister() }
+        findViewById<TextView>(R.id.tvGoToLogin).setOnClickListener { finish() }
     }
 
     private fun attemptRegister() {
@@ -49,53 +63,33 @@ class RegisterActivity : AppCompatActivity() {
         val username  = etUsername.text.toString().trim()
         val bio       = etBio.text.toString().trim()
 
-        // Validate
         if (firstName.isBlank() || lastName.isBlank() || email.isBlank() ||
-            password.isBlank() || username.isBlank()
-        ) {
-            showError(getString(R.string.error_fill_all_fields))
-            return
+            password.isBlank() || username.isBlank()) {
+            etFirstName.error = getString(R.string.error_fill_all_fields); return
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.error = getString(R.string.error_invalid_email)
-            return
+            etEmail.error = getString(R.string.error_invalid_email); return
         }
         if (password.length < 6) {
-            etPassword.error = getString(R.string.error_password_too_short)
-            return
+            etPassword.error = getString(R.string.error_password_too_short); return
         }
         if (password != confirm) {
-            etConfirmPassword.error = getString(R.string.error_passwords_no_match)
-            return
+            etConfirmPassword.error = getString(R.string.error_passwords_no_match); return
         }
 
         val db = AppDatabase.getInstance(this)
         lifecycleScope.launch {
             try {
-                db.userDao().createUserWithProfile(
-                    firstName = firstName,
-                    lastName  = lastName,
-                    email     = email,
-                    password  = password,
-                    username  = username,
-                    bio       = bio
-                )
-                // Auto-login after registration
+                db.userDao().createUserWithProfile(firstName, lastName, email, password, username, bio)
                 val user = db.userDao().getUserByEmail(email)
                 if (user != null) {
                     SessionManager.saveSession(this@RegisterActivity, user.userID.toLong())
                     goToMain()
                 }
             } catch (e: Exception) {
-                runOnUiThread {
-                    etEmail.error = getString(R.string.error_email_taken)
-                }
+                runOnUiThread { etEmail.error = getString(R.string.error_email_taken) }
             }
         }
-    }
-
-    private fun showError(msg: String) {
-        runOnUiThread { etFirstName.error = msg }
     }
 
     private fun goToMain() {
@@ -103,5 +97,17 @@ class RegisterActivity : AppCompatActivity() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
         finish()
+    }
+
+    // ── Instance state ────────────────────────────────────────────────────────
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_FIRST_NAME, etFirstName.text.toString())
+        outState.putString(KEY_LAST_NAME,  etLastName.text.toString())
+        outState.putString(KEY_EMAIL,      etEmail.text.toString())
+        outState.putString(KEY_USERNAME,   etUsername.text.toString())
+        outState.putString(KEY_BIO,        etBio.text.toString())
+        // Passwords intentionally NOT saved
     }
 }
